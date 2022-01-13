@@ -1,20 +1,38 @@
-import { Contact } from '../contact/contact.entity';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { UserStatus } from './type/user-status.enum';
+import { CaseOfUsing } from './type/user-case-of-using.enum';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  Index,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn()
-  public id: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id: string;
+
+  @Index({ unique: true })
+  @Column()
+  public preferred_username: string;
 
   @Column()
-  public fname: string;
+  public name: string;
 
-  @Column()
-  public lname: string;
+  @Column({ nullable: true, length: 50 })
+  public phone: string;
 
-  @Column()
-  public email: string;
+  @Column({ nullable: true, length: 50 })
+  public case_of_using: CaseOfUsing;
 
-  @OneToMany(() => Contact, (contact) => contact.user, { cascade: true })
-  public contacts: Contact[];
+  @Column({ length: 50 })
+  public status: UserStatus;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

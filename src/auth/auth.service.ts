@@ -1,40 +1,42 @@
-import { User } from './../user/user.entity';
-import { Injectable } from '@nestjs/common';
-import { google } from 'googleapis';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto';
+import { AuthUser } from './interface/auth-user.interface';
+import { ConfigService } from '@nestjs/config';
+import { UserStatus } from 'src/user/type/user-status.enum';
+
 @Injectable()
 export class AuthService {
-  async getContacts(accessToken: string, user: User) {
-    const service = google.people({ version: 'v1' });
-    // TODO: pageSize has 1000 as limit -
-    // implement recursive fetch when user has more than 1000 contacts
-    const res = await service.people.connections.list({
-      resourceName: 'people/me',
-      personFields: 'names,emailAddresses',
-      pageSize: 1000,
-      access_token: accessToken,
+  constructor(
+    @Inject(forwardRef(() => UserService))
+    private userService: UserService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
+
+  public async registerLocal(registerDto: RegisterDto): Promise<any> {
+    const { preferred_username, name } = registerDto;
+    const newUser = await this.userService.create({
+      preferred_username,
+      name,
+      status: UserStatus.PROVIDE_OWN_NUMBER,
     });
+    return newUser;
+  }
 
-    const {
-      data: { connections },
-    } = res;
-    const contacts = connections.map((item) => {
-      let contact = {};
+  public async login(user: any) {
+    // TODO: handle blocked user
 
-      // Some contacts don't have displayName...
-      // Check if names exist in contact
-      if (item.names && item.names.length > 0) {
-        contact = {
-          name: item?.names[0]?.displayName,
-        };
-      }
-
-      contact = {
-        ...contact,
-        user,
-        email: item?.emailAddresses[0]?.value,
-      };
-      return contact;
-    });
-    return contacts;
+    const payload: AuthUser = {
+      id: user.id,
+      status: user.status,
+    };
+    return {
+      user,
+      jwt: this.jwtService.sign(payload, {
+        expiresIn: this.configService.get('auth.expiresIn'),
+      }),
+    };
   }
 }

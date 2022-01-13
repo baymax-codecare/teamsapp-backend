@@ -1,7 +1,13 @@
-import { CreateContactDto } from '../contact/dto/create-contact.dto';
 import { ContactService } from '../contact/contact.service';
 import { UserService } from './../user/user.service';
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './jwt.guard';
@@ -20,71 +26,22 @@ export class AuthController {
     return req.user;
   }
 
-  @Get('azure')
+  /*
+   * Create or Login user with Microsoft access token(bear token)
+   */
+  @Post('azure')
   @UseGuards(AuthGuard('azure'))
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async azureAuth() {}
-
-  @Get('azure/redirect')
-  @UseGuards(AuthGuard('azure'))
-  async azureAuthRedirect(@Req() req) {
-    const user = req.user;
-    // If user is new, register user & import contacts
-    if (!!user.isNew) {
-      const newUser = await this.userService.create({
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-      });
-
-      // TODO: check if there's any update in user's contacts
-      // Now only initiated for the first login (Test version)
-
-      if (user.accessToken) {
-        const { accessToken } = req.user;
-        const contacts = await this.authService.getContacts(
-          accessToken,
-          newUser,
-        );
-        this.contactService.createMany(contacts as CreateContactDto[]);
-      }
-      return 'Successfully imported contacts';
-    } else {
-      return 'Already imported';
+  async azureAuth(@Req() req) {
+    if (!!req.user?.isNew) {
+      const registeredUser = await this.authService.registerLocal(req.user);
+      return this.authService.login(registeredUser);
     }
+    return this.authService.login(req.user);
   }
 
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async googleAuth() {}
-
-  @Get('redirect')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
-    const user = req.user;
-    // If user is new, register user & import contacts
-    if (!!user.isNew) {
-      const newUser = await this.userService.create({
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-      });
-
-      // TODO: check if there's any update in user's contacts
-      // Now only initiated for the first login (Test version)
-
-      if (user.accessToken) {
-        const { accessToken } = req.user;
-        const contacts = await this.authService.getContacts(
-          accessToken,
-          newUser,
-        );
-        this.contactService.createMany(contacts as CreateContactDto[]);
-      }
-      return 'Successfully imported contacts';
-    } else {
-      return 'Already imported';
-    }
+  @Post('login')
+  @HttpCode(401)
+  async login() {
+    return 'Unauthroized access';
   }
 }
