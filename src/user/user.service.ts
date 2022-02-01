@@ -1,3 +1,4 @@
+import { PatchMeDto } from './dto/patch-me.dto';
 import { User } from './user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +13,16 @@ export class UserService {
 
   public create(createUserDto: any): Promise<User> {
     const user = this.userRepo.create(createUserDto as User);
+
+    return this.userRepo.save(user);
+  }
+
+  public patchPersonalInfo(
+    patchMeDto: PatchMeDto,
+    authUserId: string,
+  ): Promise<User> {
+    const user = this.userRepo.create(patchMeDto);
+    user.id = authUserId;
 
     return this.userRepo.save(user);
   }

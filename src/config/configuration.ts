@@ -18,6 +18,7 @@ export default () => {
       azure: {
         clientId: process.env.AZURE_CLIENT_ID,
         tenantId: process.env.TEAMS_APP_TENANT_ID,
+        secret: process.env.AZURE_CLIENT_SECRET,
       },
     },
     typeorm: {

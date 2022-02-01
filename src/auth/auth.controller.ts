@@ -23,7 +23,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   public async me(@Req() req) {
-    return req.user;
+    return this.authService.login(req.user.id);
   }
 
   /*
@@ -34,9 +34,9 @@ export class AuthController {
   async azureAuth(@Req() req) {
     if (!!req.user?.isNew) {
       const registeredUser = await this.authService.registerLocal(req.user);
-      return this.authService.login(registeredUser);
+      return this.authService.login(registeredUser.id);
     }
-    return this.authService.login(req.user);
+    return this.authService.login(req.user.id);
   }
 
   @Post('login')

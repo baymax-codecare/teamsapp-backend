@@ -6,6 +6,15 @@ import { UserModule } from '../user/user.module';
 import { ContactModule } from '../contact/contact.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { AuthUser } from './interface/auth-user.interface';
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface User extends AuthUser {}
+  }
+}
 
 @Global()
 @Module({

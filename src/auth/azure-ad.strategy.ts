@@ -12,9 +12,11 @@ export class AzureADStrategy extends PassportStrategy(BearerStrategy, 'azure') {
     private readonly configService: ConfigService,
   ) {
     super({
-      identityMetadata: `https://login.microsoftonline.com/999c9a43-ae68-4e6a-8f7e-3bf505f92204/v2.0/.well-known/openid-configuration`,
-      clientID: '165f5133-3de9-44d4-9518-f0463ac9bcaf',
-      clientSecret: '9JY7Q~OOv1iq7cImKT4v.at.1qRg180oM-Vo5',
+      identityMetadata: `https://login.microsoftonline.com/${configService.get(
+        'auth.azure.tenantId',
+      )}/v2.0/.well-known/openid-configuration`,
+      clientID: configService.get('auth.azure.clientId'),
+      clientSecret: configService.get('auth.azure.secret'),
     });
   }
 

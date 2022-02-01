@@ -25,13 +25,20 @@ export class AuthService {
     return newUser;
   }
 
-  public async login(user: any) {
+  public async login(id: string) {
     // TODO: handle blocked user
+
+    const user = await this.userService.userRepo.findOne(id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
 
     const payload: AuthUser = {
       id: user.id,
       status: user.status,
     };
+
     return {
       user,
       jwt: this.jwtService.sign(payload, {
