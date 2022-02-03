@@ -1,3 +1,4 @@
+import { PhoneNumberModule } from './phone-numbers/phone-number.module';
 import { GlobalJwtModule } from './shared/jwt.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -44,6 +45,8 @@ import configuration from './config/configuration';
     AuthModule,
 
     UserModule,
+
+    PhoneNumberModule,
   ],
   controllers: [AppController],
   providers: [AppService],

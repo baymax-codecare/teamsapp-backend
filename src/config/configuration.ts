@@ -34,5 +34,10 @@ export default () => {
       synchronize: false,
       autoLoadEntities: true,
     },
+    bandwidth: {
+      accountId: process.env.ACCOUNT_ID,
+      userName: process.env.USER_NAME,
+      password: process.env.PASSWORD,
+    },
   };
 };

@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
@@ -31,7 +37,7 @@ export class AuthService {
     const user = await this.userService.userRepo.findOne(id);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not authorized', HttpStatus.UNAUTHORIZED);
     }
 
     const payload: AuthUser = {

@@ -25,6 +25,7 @@
     "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
+    "@bandwidth/numbers": "^1.8.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.1.5",
     "@nestjs/core": "^8.0.0",
