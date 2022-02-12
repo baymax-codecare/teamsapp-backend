@@ -19,6 +19,6 @@ export class Contact {
   public email: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   public user: User;
 }
