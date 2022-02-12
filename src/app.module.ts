@@ -1,3 +1,4 @@
+import { MessageModule } from './message/message.module';
 import { PhoneNumberModule } from './phone-numbers/phone-number.module';
 import { GlobalJwtModule } from './shared/jwt.module';
 import { Module } from '@nestjs/common';
@@ -47,6 +48,8 @@ import configuration from './config/configuration';
     UserModule,
 
     PhoneNumberModule,
+
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
