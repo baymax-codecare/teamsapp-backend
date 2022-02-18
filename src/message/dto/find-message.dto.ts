@@ -3,17 +3,9 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
 export class FindMessageDto {
   @IsUUID()
   @IsNotEmpty()
-  public senderId: string;
+  public sender_id: string;
 
   @IsUUID()
   @IsNotEmpty()
-  public senderPhoneId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  public receiverId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  public receiverPhoneId: string;
+  public receiver_id: string;
 }

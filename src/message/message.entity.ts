@@ -1,5 +1,4 @@
-import { PhoneNumber } from './../phone-numbers/phone-number.entity';
-import { User } from './../user/user.entity';
+import { Contact } from './../contact/contact.entity';
 import { EntityTimestamp } from '../shared/entity/timestamp';
 import {
   Column,
@@ -17,21 +16,13 @@ export class Message extends EntityTimestamp {
   @Column({ length: 255 })
   public sms: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => Contact)
   @JoinColumn({ name: 'sender_id' })
-  public sender: User;
+  public sender: Contact;
 
-  @ManyToOne(() => PhoneNumber)
-  @JoinColumn({ name: 'sender_phone_id' })
-  public senderPhone: PhoneNumber;
-
-  @ManyToOne(() => User)
+  @ManyToOne(() => Contact)
   @JoinColumn({ name: 'receiver_id' })
-  public receiver: User;
-
-  @ManyToOne(() => PhoneNumber)
-  @JoinColumn({ name: 'receiver_phone_id' })
-  public receiverPhone: PhoneNumber;
+  public receiver: Contact;
 
   @Column({ name: 'is_read', default: false })
   public isRead: boolean;

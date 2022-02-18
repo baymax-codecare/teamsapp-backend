@@ -52,7 +52,7 @@ export class PhoneNumberService {
     const user = await this.userService.userRepo.findOne(userId);
     const number = await this.phoneNumberRepo.create({
       phone_number: createNumberDTO.number,
-      user,
+      // user,
     });
     const newNumber = await this.phoneNumberRepo.save(number);
 

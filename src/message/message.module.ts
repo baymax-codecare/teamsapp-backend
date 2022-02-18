@@ -1,3 +1,4 @@
+import { ContactModule } from './../contact/contact.module';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { Message } from './message.entity';
@@ -6,7 +7,7 @@ import { MessageGateway } from './message.gateway';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message])],
+  imports: [TypeOrmModule.forFeature([Message]), ContactModule],
   controllers: [MessageController],
   providers: [MessageGateway, MessageService],
   exports: [MessageService],

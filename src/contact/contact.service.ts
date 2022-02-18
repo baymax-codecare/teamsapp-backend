@@ -18,7 +18,12 @@ export class ContactService {
       .values(manyContactsDto)
       .execute();
   }
-  public async getContactsByUserId(userId: number): Promise<Contact[]> {
+
+  public async getContactById(id: string): Promise<Contact> {
+    return this.contactRepo.findOne(id);
+  }
+
+  public async getContactsByUserId(userId: string): Promise<Contact[]> {
     return this.contactRepo.find({
       where: {
         user: {

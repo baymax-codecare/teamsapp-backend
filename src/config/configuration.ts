@@ -38,6 +38,7 @@ export default () => {
       accountId: process.env.ACCOUNT_ID,
       userName: process.env.USER_NAME,
       password: process.env.PASSWORD,
+      applicationId: process.env.APPLICATION_ID,
     },
   };
 };

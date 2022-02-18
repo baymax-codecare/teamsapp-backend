@@ -25,6 +25,7 @@
     "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
+    "@bandwidth/messaging": "^4.0.2",
     "@bandwidth/numbers": "^1.8.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.1.5",
@@ -36,6 +37,7 @@
     "@nestjs/serve-static": "^2.2.2",
     "@nestjs/typeorm": "^8.0.2",
     "@nestjs/websockets": "^8.2.6",
+    "@socket.io/redis-adapter": "^7.1.0",
     "@types/passport-jwt": "^3.0.6",
     "ajv": "^6.9.1",
     "class-transformer": "^0.5.1",
@@ -48,6 +50,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.1",
+    "redis": "^4.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

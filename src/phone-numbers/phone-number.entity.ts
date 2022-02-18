@@ -3,7 +3,7 @@ import { User } from '../user/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,7 +16,7 @@ export class PhoneNumber extends EntityTimestamp {
   @Column({ length: 50 })
   public phone_number: string;
 
-  @ManyToMany(() => User)
-  @JoinColumn({ name: 'user_id' })
-  public user: User;
+  // @ManyToMany(() => User)
+  // @JoinTable()
+  // public users: User[];
 }

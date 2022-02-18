@@ -5,7 +5,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
   @Get(':id')
-  public async list(@Param('id') id: number) {
+  public async list(@Param('id') id: string) {
     return await this.contactService.getContactsByUserId(id);
   }
 

@@ -1,24 +1,27 @@
-import { User } from '../user/user.entity';
+import { User } from './../user/user.entity';
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity({ name: 'contacts' })
 export class Contact {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
-  @Column()
+  @Column({ name: 'name' })
   public name: string;
 
-  @Column()
+  @Column({ name: 'email', nullable: true })
   public email: string;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @Column({ name: 'phone_number' })
+  public phoneNumber: string;
+
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'user_id' })
   public user: User;
 }
