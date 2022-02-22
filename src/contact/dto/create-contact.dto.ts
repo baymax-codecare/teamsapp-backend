@@ -1,5 +1,10 @@
-import { User } from './../../user/user.entity';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateContactDto {
   @IsString()
@@ -7,9 +12,19 @@ export class CreateContactDto {
   public name?: string;
 
   @IsString()
-  @IsNotEmpty()
-  public email: string;
+  @IsOptional()
+  public email?: string;
 
   @IsNotEmpty()
-  public user: User;
+  @IsString()
+  @Length(1, 255)
+  public phoneNumber: string;
+
+  @IsBoolean()
+  @IsOptional()
+  public isHidden?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  public isRoot?: boolean;
 }

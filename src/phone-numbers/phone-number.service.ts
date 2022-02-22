@@ -1,3 +1,4 @@
+import { ContactService } from './../contact/contact.service';
 import { UserService } from './../user/user.service';
 import { CreatePhoneNumberDTO } from './dto/create-phone-number.dto';
 import { ConfigService } from '@nestjs/config';
@@ -15,6 +16,7 @@ export class PhoneNumberService {
     public phoneNumberRepo: Repository<PhoneNumber>,
     private configService: ConfigService,
     private userService: UserService,
+    private contactService: ContactService,
   ) {}
 
   public async getAvailableNumbers(state, area): Promise<string[]> {
@@ -51,11 +53,26 @@ export class PhoneNumberService {
   ): Promise<number> {
     const user = await this.userService.userRepo.findOne(userId);
     const number = await this.phoneNumberRepo.create({
-      phone_number: createNumberDTO.number,
+      phoneNumber: createNumberDTO.number,
       // user,
     });
+
+    // Create a contact that is hidden
+    const newContact = await this.contactService.create(
+      {
+        name: user.name,
+        email: user.preferredUsername,
+        phoneNumber: createNumberDTO.number,
+        isHidden: true,
+        isRoot: true,
+      },
+      userId,
+    );
+
     const newNumber = await this.phoneNumberRepo.save(number);
 
+    user.bandwidthNumber = newNumber;
+    user.meContact = newContact;
     user.status = UserStatus.ACTIVE;
     this.userService.userRepo.save(user);
     return newNumber;

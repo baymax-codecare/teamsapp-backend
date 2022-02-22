@@ -22,8 +22,6 @@ export class PhoneNumberController {
     @Body() createNumberDTO: CreatePhoneNumberDTO,
     @Req() req: Request,
   ): Promise<PhoneNumber> {
-    console.log('Create number DTO');
-    console.log(createNumberDTO);
     return this.phoneNumberService.create(createNumberDTO, req.user.id);
   }
   @Get('available/:state/:area')

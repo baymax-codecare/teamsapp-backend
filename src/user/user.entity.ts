@@ -1,3 +1,5 @@
+import { Contact } from './../contact/contact.entity';
+import { PhoneNumber } from './../phone-numbers/phone-number.entity';
 import { UserStatus } from './type/user-status.enum';
 import { CaseOfUsing } from './type/user-case-of-using.enum';
 import {
@@ -5,8 +7,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Index,
+  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -16,7 +20,7 @@ export class User {
 
   @Index({ unique: true })
   @Column()
-  public preferred_username: string;
+  public preferredUsername: string;
 
   @Column()
   public name: string;
@@ -25,14 +29,22 @@ export class User {
   public phone: string;
 
   @Column({ nullable: true, length: 50 })
-  public case_of_using: CaseOfUsing;
+  public caseOfUsing: CaseOfUsing;
 
   @Column({ length: 50 })
   public status: UserStatus;
 
+  @OneToOne(() => PhoneNumber)
+  @JoinColumn()
+  public bandwidthNumber: PhoneNumber;
+
+  @OneToOne(() => Contact)
+  @JoinColumn()
+  public meContact: Contact;
+
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updatedAt: Date;
 }

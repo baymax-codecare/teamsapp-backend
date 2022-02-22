@@ -38,6 +38,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "@nestjs/websockets": "^8.2.6",
     "@socket.io/redis-adapter": "^7.1.0",
+    "@types/md5": "^2.3.2",
     "@types/passport-jwt": "^3.0.6",
     "ajv": "^6.9.1",
     "class-transformer": "^0.5.1",

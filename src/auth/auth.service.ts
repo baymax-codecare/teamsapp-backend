@@ -22,9 +22,9 @@ export class AuthService {
   ) {}
 
   public async registerLocal(registerDto: RegisterDto): Promise<any> {
-    const { preferred_username, name } = registerDto;
+    const { preferredUsername, name } = registerDto;
     const newUser = await this.userService.create({
-      preferred_username,
+      preferredUsername,
       name,
       status: UserStatus.PROVIDE_OWN_NUMBER,
     });
@@ -34,7 +34,9 @@ export class AuthService {
   public async login(id: string) {
     // TODO: handle blocked user
 
-    const user = await this.userService.userRepo.findOne(id);
+    const user = await this.userService.userRepo.findOne(id, {
+      relations: ['bandwidthNumber', 'meContact'],
+    });
 
     if (!user) {
       throw new HttpException('User not authorized', HttpStatus.UNAUTHORIZED);

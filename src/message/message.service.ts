@@ -1,3 +1,4 @@
+import { generateRoomId } from './../shared/utils';
 import { MessageGateway } from './message.gateway';
 import { InboundMessageDto } from './dto/inbound-message.dto';
 import { ConfigService } from '@nestjs/config';
@@ -9,7 +10,7 @@ import { Message } from './message.entity';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { PatchMessageDto } from './dto/patch-message.dto';
-import { Client, ApiController, MessageRequest } from '@bandwidth/messaging';
+import { Client, ApiController } from '@bandwidth/messaging';
 
 @Injectable()
 export class MessageService {
@@ -70,8 +71,8 @@ export class MessageService {
     const accountId = this.configService.get('bandwidth.accountId');
 
     const applicationId = this.configService.get('bandwidth.applicationId');
-    const toPhoneNumber = '+1' + message.receiver.phoneNumber;
-    const fromPhoneNumber = '+14242545024';
+    const toPhoneNumber = message.receiver.phoneNumber;
+    const fromPhoneNumber = message.sender.phoneNumber;
     const text = message.sms;
     const body = {
       applicationId,
@@ -80,7 +81,9 @@ export class MessageService {
       text,
     };
 
-    await controller.createMessage(accountId, body);
+    const bandwidth = await controller.createMessage(accountId, body);
+    console.log(bandwidth);
+
     return newMessage;
   }
 
@@ -103,9 +106,49 @@ export class MessageService {
   public async getInboundMessage(
     inboundMessageDto: InboundMessageDto,
   ): Promise<void> {
-    console.log('INBOUND MESSAGE');
-    console.log(inboundMessageDto);
+    try {
+      const to = inboundMessageDto[0].to;
+      const from = inboundMessageDto[0].message.from;
 
+      const receiver = await this.contactService.getRootContactByPhone(to);
+
+      // Check if in receiver's contact list have this sender's number
+      let sender = await this.contactService.getContactByPhoneAndUserId(
+        from,
+        receiver.user.id,
+      );
+
+      // If sender not exist, create a new contact
+      if (!sender) {
+        sender = await this.contactService.create(
+          {
+            name: from,
+            phoneNumber: from,
+          },
+          receiver.user.id,
+        );
+      }
+
+      const message = this.messageRepo.create({
+        sms: inboundMessageDto[0].message.text,
+        isRead: false,
+        isSent: false,
+        isSenderDeleted: false,
+        isReceiverDeleted: false,
+      });
+      message.sender = sender;
+      message.receiver = receiver;
+      this.messageRepo.save(message);
+
+      this.messageGateway.server.to(to).emit('msgToClientRefreshContact');
+      this.messageGateway.server.to(to).emit('msgToClient');
+      // this.messageGateway.server.to(from).emit('msgToClient');
+    } catch (err) {
+      console.log(err);
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+
+    /*
     //
     // Demo & Sender is fixed for demo purpose
     //
@@ -137,7 +180,7 @@ export class MessageService {
     message.sender = sender;
     message.receiver = receiver;
     this.messageRepo.save(message);
-    this.messageGateway.server.to('DemoRoomID').emit('msgToClient', {});
+    this.messageGateway.server.to('DemoRoomID').emit('msgToClient', {});*/
   }
 
   /**
@@ -177,19 +220,23 @@ export class MessageService {
    * @returns {Message[]}
    */
   public getAllMessages(findMessageDto: FindMessageDto) {
-    return this.messageRepo.find({
-      where: [
-        {
-          sender: findMessageDto.sender_id,
-          receiver: findMessageDto.receiver_id,
-        },
-        {
-          sender: findMessageDto.receiver_id,
-          receiver: findMessageDto.sender_id,
-          // isSent: true, //TODO: only show sent message, for demo purpose now
-        },
-      ],
-      relations: ['sender', 'receiver'],
-    });
+    try {
+      return this.messageRepo.find({
+        where: [
+          {
+            sender: findMessageDto.sender_id,
+            receiver: findMessageDto.receiver_id,
+          },
+          {
+            sender: findMessageDto.receiver_id,
+            receiver: findMessageDto.sender_id,
+            // isSent: true, //TODO: only show sent message, for demo purpose now
+          },
+        ],
+        relations: ['sender', 'receiver'],
+      });
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 }

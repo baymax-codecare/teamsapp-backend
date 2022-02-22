@@ -9,7 +9,7 @@ export class PatchMeDto {
 
   @IsEnum(CaseOfUsing)
   @IsOptional()
-  public case_of_using?: CaseOfUsing;
+  public caseOfUsing?: CaseOfUsing;
 
   @IsEnum(UserStatus)
   @IsOptional()

@@ -18,10 +18,19 @@ export class Contact {
   @Column({ name: 'email', nullable: true })
   public email: string;
 
-  @Column({ name: 'phone_number' })
+  @Column({ unique: true })
   public phoneNumber: string;
 
+  @Column({ default: 'false' })
+  public isHidden?: boolean;
+
+  @Column({ default: false })
+  public isRoot?: boolean; // True: a contact that uses bandwidth number as a service of our teams app
+
+  // @OneToMany(() => PhoneNumber, (phoneNumber) => phoneNumber.user)
+  // public bandwidthNumbers: PhoneNumber[];
+
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: true })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   public user: User;
 }

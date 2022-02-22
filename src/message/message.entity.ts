@@ -17,22 +17,22 @@ export class Message extends EntityTimestamp {
   public sms: string;
 
   @ManyToOne(() => Contact)
-  @JoinColumn({ name: 'sender_id' })
+  @JoinColumn()
   public sender: Contact;
 
   @ManyToOne(() => Contact)
-  @JoinColumn({ name: 'receiver_id' })
+  @JoinColumn({ name: 'receiverId' })
   public receiver: Contact;
 
-  @Column({ name: 'is_read', default: false })
+  @Column({ default: false })
   public isRead: boolean;
 
-  @Column({ name: 'is_sent', default: false })
+  @Column({ default: false })
   public isSent: boolean;
 
-  @Column({ name: 'is_sender_deleted', default: false })
+  @Column({ default: false })
   public isSenderDeleted: boolean;
 
-  @Column({ name: 'is_receiver_deleted', default: false })
+  @Column({ default: false })
   public isReceiverDeleted: boolean;
 }

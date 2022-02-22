@@ -1,3 +1,4 @@
+import { ContactModule } from './../contact/contact.module';
 import { UserModule } from './../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PhoneNumberService } from './phone-number.service';
@@ -6,7 +7,7 @@ import { PhoneNumberController } from './phone-number.controller';
 import { PhoneNumber } from './phone-number.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PhoneNumber]), UserModule],
+  imports: [TypeOrmModule.forFeature([PhoneNumber]), UserModule, ContactModule],
   providers: [PhoneNumberService],
   controllers: [PhoneNumberController],
   exports: [PhoneNumberService],

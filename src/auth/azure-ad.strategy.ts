@@ -24,8 +24,8 @@ export class AzureADStrategy extends PassportStrategy(BearerStrategy, 'azure') {
     const { name, preferred_username } = token;
     try {
       const existedUser = await this.userService.userRepo.findOne({
-        where: { preferred_username },
-        select: ['id', 'preferred_username', 'name', 'status'],
+        where: { preferredUsername: preferred_username },
+        select: ['id', 'preferredUsername', 'name', 'status'],
       });
 
       if (existedUser) {
@@ -33,7 +33,7 @@ export class AzureADStrategy extends PassportStrategy(BearerStrategy, 'azure') {
       }
 
       const user = {
-        preferred_username,
+        preferredUsername: preferred_username,
         name,
         isNew: true,
       };
