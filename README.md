@@ -32,6 +32,10 @@
 $ npm install
 ```
 
+## DB Migration
+npm run migration:run
+
+
 ## Running the app
 
 ```bash
